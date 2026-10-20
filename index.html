@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111126">
+<title>Smart, Creation and Challenges</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box} :root{color-scheme:dark}
+body{margin:0;padding:14px;font-family:Arial,sans-serif;background:radial-gradient(ellipse at top,#34205d,#090b1b 70%);color:#fff}
+main{max-width:1100px;margin:auto}h1{text-align:center;color:#8af2ff;font-size:clamp(25px,5vw,38px)}h2{margin-top:0}
+.subtitle{text-align:center;color:#d6d7ff;line-height:1.5}
+.panel{background:#17182d;border:1px solid #45466f;border-radius:18px;padding:18px;margin:18px 0;box-shadow:0 10px 35px #0004}
+nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:18px 0}
+nav a{color:#dffaff;text-decoration:none;background:#242440;border:1px solid #555675;padding:10px 13px;border-radius:12px}
+button,.button{cursor:pointer;border:0;border-radius:11px;padding:12px 15px;font-weight:bold;font-size:15px;background:#80f1ff;color:#101326;text-decoration:none;display:inline-block}
+button:disabled{opacity:.45;cursor:not-allowed}.hidden{display:none!important}
+label{display:block;margin:12px 0 6px;font-weight:bold}
+input,textarea,select{width:100%;padding:12px;border-radius:10px;border:1px solid #575b7d;background:#0b1023;color:#fff;font-size:16px}
+textarea{min-height:100px;resize:vertical}
+.small{font-size:13px;color:#c6c9e8;line-height:1.5}.muted{color:#c6c9e8}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.design-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+.design{min-height:120px;border:2px solid #555675;border-radius:13px;background-size:cover;background-position:center;display:flex;align-items:end;padding:7px;cursor:pointer;text-shadow:0 2px 5px #000;font-weight:bold;font-size:12px;position:relative;overflow:hidden}
+.design:after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(transparent,#000b)}
+.design span{position:relative;z-index:1;background:#10101bbd;padding:6px;border-radius:7px}
+.design.active{border:3px solid #7ef5ff;box-shadow:0 0 16px #60eaff}
+.preview{min-height:340px;border-radius:15px;padding:18px;display:flex;align-items:center;justify-content:center;text-align:center;background-size:cover;background-position:center;overflow-wrap:anywhere}
+.preview-inner{width:100%;padding:22px 10px;border-radius:12px;background:#0001}
+#pname{font-size:clamp(25px,5vw,43px);margin:0 0 14px}#pmessage{font-size:clamp(17px,3vw,25px);white-space:pre-wrap;margin:0}#pextra{white-space:pre-wrap;margin-top:14px}
+#qr{display:flex;justify-content:center;margin:14px auto;background:#fff;padding:10px;width:max-content;max-width:100%;min-height:0}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1}
+hr{border:0;border-top:1px solid #45466f;margin:18px 0}
+.social-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.status{white-space:pre-wrap}.success{color:#8fffd4}.error{color:#ffb4c2}
+@media(max-width:720px){body{padding:9px}.grid2{grid-template-columns:1fr}.design-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.design{min-height:105px}.panel{padding:13px}.social-list{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<h1>✨ Smart, Creation and Challenges</h1>
+<p class="subtitle">Create birthday wishes, collect social links, and build a mini website — all in one place.</p>
+<nav>
+<a href="#birthday">🎂 Birthday Wishes</a><a href="#social">🔗 Social Connect</a><a href="#custom">🌐 Custom Website</a>
+</nav>
+
+<section class="panel" id="birthday">
+<h2>🎂 Birthday Wishes Studio</h2>
+<p class="small">Choose a background, write your own message (long messages are allowed), preview it, and create a shareable QR.</p>
+<label for="design">Birthday background</label><select id="design"></select>
+<div class="design-grid" id="designGrid" style="margin-top:12px"></div>
+<div class="grid2" style="margin-top:18px">
+<div>
+<label for="name">Name</label><input id="name" placeholder="Person's name">
+<label for="message">Birthday message</label><textarea id="message" placeholder="Write your own full birthday wish here — it can be long."></textarea>
+<label for="extra">Extra text (optional)</label><input id="extra" placeholder="From, with love, etc.">
+<label for="color">Text colour</label><select id="color"><option value="#ffffff">White</option><option value="#ffe39b">Golden</option><option value="#ffb9df">Pink</option><option value="#9ff3ff">Sky Blue</option><option value="#25172a">Dark</option></select>
+<button id="birthdayQR" style="width:100%;margin-top:14px">Save & Generate QR</button>
+<div id="qr"></div><p id="qrStatus" class="small status">Publish on Netlify and configure the function to create compact share links.</p>
+<button id="copyBirthdayLink" class="hidden" style="width:100%;margin-top:8px">Copy birthday link</button>
+</div>
+<div><h3>Live preview</h3><div class="preview" id="preview"><div class="preview-inner"><h2 id="pname"></h2><p id="pmessage"></p><div id="pextra"></div></div></div><p class="small">Your message is not pre-written. It updates as you type.</p></div>
+</div>
+</section>
+
+<section class="panel" id="social">
+<h2>🔗 Social Connect</h2>
+<p class="small">Add your profile links or contact details. Leave any field blank if you don't want it shown. TikTok is not included.</p>
+<div class="social-list">
+<div><label for="instagram">Instagram profile URL</label><input id="instagram" type="url" placeholder="https://instagram.com/yourname"></div>
+<div><label for="facebook">Facebook profile URL</label><input id="facebook" type="url" placeholder="https://facebook.com/yourname"></div>
+<div><label for="snapchat">Snapchat profile URL</label><input id="snapchat" type="url" placeholder="https://www.snapchat.com/add/yourname"></div>
+<div><label for="xlink">X / Twitter URL</label><input id="xlink" type="url" placeholder="https://x.com/yourname"></div>
+<div><label for="telegram">Telegram URL</label><input id="telegram" type="url" placeholder="https://t.me/yourname"></div>
+<div><label for="threads">Threads URL</label><input id="threads" type="url" placeholder="https://www.threads.net/@yourname"></div>
+<div><label for="whatsapp">WhatsApp number or link</label><input id="whatsapp" placeholder="+91... or https://wa.me/..."></div>
+<div><label for="youtube">YouTube channel URL</label><input id="youtube" type="url" placeholder="https://youtube.com/@yourchannel"></div>
+<div><label for="linkedin">LinkedIn URL</label><input id="linkedin" type="url" placeholder="https://linkedin.com/in/yourname"></div>
+<div><label for="messenger">Messenger URL</label><input id="messenger" type="url" placeholder="https://m.me/yourname"></div>
+<div><label for="email">Email (optional)</label><input id="email" type="email" placeholder="you@example.com"></div>
+<div><label for="phone">Phone (optional)</label><input id="phone" type="tel" placeholder="+91..."></div>
+</div>
+<label for="socialTitle">Page title</label><input id="socialTitle" placeholder="My Social Links" value="Connect with me">
+<label for="socialNote">Short introduction (optional)</label><textarea id="socialNote" placeholder="A few words about you"></textarea>
+<div class="row" style="margin-top:12px"><button id="previewSocial">Preview Social Connect</button><button id="socialQR">Generate Social QR</button></div>
+<div id="socialPreview" class="panel hidden"></div><div id="socialQrBox"></div><p id="socialStatus" class="small status"></p>
+</section>
+
+<section class="panel" id="custom">
+<h2>🌐 Custom Website Maker</h2>
+<p class="small">Design a simple personal mini-site with your own title, message, button, colour and background.</p>
+<div class="grid2">
+<div>
+<label for="siteName">Website name</label><input id="siteName" placeholder="My Creative Page">
+<label for="siteTagline">Tagline</label><input id="siteTagline" placeholder="A little about my world">
+<label for="siteHeadline">Main heading</label><input id="siteHeadline" placeholder="Welcome to my website">
+<label for="siteDescription">Description</label><textarea id="siteDescription" placeholder="Write any description you want."></textarea>
+<label for="siteButtonText">Button text</label><input id="siteButtonText" placeholder="Visit my favourite site" value="Visit link">
+<label for="siteButtonURL">Button URL (optional)</label><input id="siteButtonURL" type="url" placeholder="https://example.com">
+<label for="siteColor">Text colour</label><select id="siteColor"><option value="#ffffff">White</option><option value="#ffe39b">Golden</option><option value="#ffb9df">Pink</option><option value="#9ff3ff">Sky Blue</option><option value="#25172a">Dark</option></select>
+<label for="siteBackground">Background style</label><select id="siteBackground"><option value="0">Galaxy Night</option><option value="1">Colorful Pastel</option><option value="2">Black & Gold</option><option value="3">Ocean Dream</option><option value="4">Sunset Glow</option></select>
+<button id="previewSite" style="width:100%;margin-top:14px">Update Website Preview</button>
+<button id="siteQR" style="width:100%;margin-top:8px">Save & Generate Website QR</button>
+<div id="siteQrBox"></div><p id="siteStatus" class="small status"></p>
+</div>
+<div><h3>Website preview</h3><div class="preview" id="sitePreview"><div class="preview-inner" id="sitePreviewInner"><h2 id="spName">My Creative Page</h2><p id="spTagline"></p><h2 id="spHeadline">Welcome to my website</h2><p id="spDescription"></p><a id="spButton" class="button" href="#" target="_blank" rel="noopener">Visit link</a></div></div></div>
+</div>
+</section>
+<p class="small" style="text-align:center">Made with creativity ✨ • Keep personal contact details private if you don't want them public.</p>
+</main>
+<script>
+const backgrounds=[
+["01 · Elegant Marble","radial-gradient(ellipse at 20% 20%,#fff 0 7%,transparent 35%),radial-gradient(ellipse at 85% 80%,#f3d5df,transparent 40%),linear-gradient(135deg,#b5b9c7,#fff0ed,#d8c2c5)"],
+["02 · Colorful Balloons","radial-gradient(circle at 15% 20%,#ff789b 0 8%,transparent 9%),radial-gradient(circle at 82% 18%,#ffd56b 0 9%,transparent 10%),radial-gradient(circle at 78% 70%,#a4f0ff 0 10%,transparent 11%),linear-gradient(135deg,#68d7e7,#c5e8ff,#ffcfdd)"],
+["03 · Golden Celebration","radial-gradient(circle at 20% 15%,#eac66b 0 3px,transparent 5px),radial-gradient(circle at 75% 65%,#f4d98b 0 4px,transparent 6px),linear-gradient(135deg,#050507,#292018,#050507)"],
+["04 · Floral Pink","radial-gradient(circle at 15% 20%,#ffb7d4 0 8%,transparent 9%),radial-gradient(circle at 85% 80%,#ffcadb 0 12%,transparent 13%),linear-gradient(135deg,#ffe3ed,#f5c2d7,#fff1f5)"],
+["05 · Neon Party","radial-gradient(circle at 15% 20%,#00eaff 0 4%,transparent 5%),radial-gradient(circle at 80% 25%,#ff22e6 0 7%,transparent 8%),linear-gradient(135deg,#06072b,#17104e,#08051c)"],
+["06 · Luxury Arch","radial-gradient(ellipse at 50% 60%,#fff6df 0 30%,transparent 31%),linear-gradient(135deg,#5a321c,#e8bd78,#3d2118)"],
+["07 · Dreamy Sky","radial-gradient(ellipse at 20% 25%,#fff 0 8%,transparent 9%),radial-gradient(ellipse at 80% 35%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#f7c6e6,#a6caff,#fff0d2)"],
+["08 · Black & Gold","radial-gradient(circle at 20% 15%,#d8ad50 0 3px,transparent 5px),linear-gradient(135deg,#050505,#29251c,#050505)"],
+["09 · Minimal Pastel","radial-gradient(circle at 12% 20%,#f6b9ce 0 7%,transparent 8%),radial-gradient(circle at 85% 20%,#a7e5f2 0 8%,transparent 9%),linear-gradient(135deg,#fff0e9,#f5e8ff,#d9f8ff)"],
+["10 · Galaxy Night","radial-gradient(circle at 70% 20%,#f7d4ff 0 2px,transparent 4px),radial-gradient(circle at 20% 65%,#a69cff 0 3px,transparent 5px),linear-gradient(135deg,#050523,#211454,#080a30)"],
+["11 · Rustic Cake","radial-gradient(circle at 50% 80%,#f6c99a 0 15%,transparent 16%),linear-gradient(135deg,#4c261c,#bd754a,#24130f)"],
+["12 · Fun Celebration","radial-gradient(circle at 12% 15%,#ff6e9d 0 7%,transparent 8%),radial-gradient(circle at 80% 25%,#ffe16b 0 8%,transparent 9%),linear-gradient(135deg,#fff3a6,#a5edff,#ffb6df)"],
+["13 · Red Romance","radial-gradient(circle at 15% 20%,#ff6b79 0 8%,transparent 9%),linear-gradient(135deg,#25000b,#8c0d2c,#19000b)"],
+["14 · Purple Floral","radial-gradient(circle at 15% 15%,#e3b4ff 0 9%,transparent 10%),linear-gradient(135deg,#28104f,#9c78bd,#f0d9ff)"],
+["15 · Blue Silver","radial-gradient(circle at 15% 20%,#fff 0 3px,transparent 5px),linear-gradient(135deg,#152c4d,#b9d9ec,#345b85)"],
+["16 · Rose Gold","radial-gradient(circle at 20% 20%,#ffe7d8 0 8%,transparent 9%),linear-gradient(135deg,#71404b,#eab6a8,#ffe4d5)"],
+["17 · Candy Party","radial-gradient(circle at 20% 20%,#ff73c8 0 9%,transparent 10%),radial-gradient(circle at 80% 70%,#72efff 0 12%,transparent 13%),linear-gradient(135deg,#ffb5d5,#a7f3ff,#fff0a9)"],
+["18 · Midnight Blue","radial-gradient(circle at 25% 20%,#d8f6ff 0 2px,transparent 4px),linear-gradient(135deg,#020b25,#123d77,#080b23)"],
+["19 · Peach Garden","radial-gradient(circle at 15% 25%,#ffd1b8 0 12%,transparent 13%),radial-gradient(circle at 85% 75%,#ffb7cc 0 12%,transparent 13%),linear-gradient(135deg,#fff1df,#ffd5d7,#fff5e8)"],
+["20 · Emerald Glow","radial-gradient(circle at 80% 20%,#6effc6 0 8%,transparent 9%),linear-gradient(135deg,#031e24,#07584a,#07131d)"],
+["21 · Lavender Dream","radial-gradient(circle at 15% 20%,#fff 0 5%,transparent 6%),linear-gradient(135deg,#c6a5ff,#f6d7ff,#b8caff)"],
+["22 · Fireworks Night","radial-gradient(circle at 25% 20%,#ffdf79 0 3%,transparent 4%),radial-gradient(circle at 80% 35%,#ff80cf 0 4%,transparent 5%),linear-gradient(135deg,#06051e,#3b1459,#080a24)"],
+["23 · Silver Sparkle","radial-gradient(circle at 15% 15%,#fff 0 3px,transparent 5px),radial-gradient(circle at 80% 60%,#fff 0 2px,transparent 4px),linear-gradient(135deg,#7c8da7,#e2ebf4,#8799b7)"],
+["24 · Tropical Party","radial-gradient(ellipse at 15% 20%,#3bda9b 0 10%,transparent 11%),radial-gradient(ellipse at 85% 75%,#ffe36d 0 12%,transparent 13%),linear-gradient(135deg,#007c91,#6be3c2,#fff0a0)"],
+["25 · Cherry Blossom","radial-gradient(circle at 20% 20%,#ffb9dc 0 12%,transparent 13%),radial-gradient(circle at 85% 75%,#ffcee7 0 10%,transparent 11%),linear-gradient(135deg,#fff0f6,#f4b7d5,#fff8fc)"],
+["26 · Royal Purple","radial-gradient(circle at 20% 20%,#ffd76e 0 5%,transparent 6%),linear-gradient(135deg,#180c42,#592b9b,#1b0c3c)"],
+["27 · Rainbow Confetti","radial-gradient(circle at 15% 20%,#ff5e85 0 5%,transparent 6%),radial-gradient(circle at 80% 20%,#ffdf62 0 7%,transparent 8%),radial-gradient(circle at 60% 80%,#61e8ff 0 9%,transparent 10%),linear-gradient(135deg,#ffb5cc,#ffe9a8,#b3f3ff)"],
+["28 · Champagne Night","radial-gradient(circle at 20% 15%,#f5d48b 0 3px,transparent 5px),linear-gradient(135deg,#17121a,#66442b,#120f18)"],
+["29 · Ice Crystal","radial-gradient(circle at 20% 20%,#fff 0 4px,transparent 6px),radial-gradient(circle at 80% 75%,#c6f5ff 0 7%,transparent 8%),linear-gradient(135deg,#c4f3ff,#f9fdff,#9fc4ed)"],
+["30 · Sunset Glow","radial-gradient(ellipse at 50% 80%,#ffcf91,transparent 40%),linear-gradient(135deg,#582e76,#ed8b91,#ffd49b)"]
+];
+let selected=9, lastBirthdayURL="", lastSocialURL="", lastSiteURL="";
+const $=id=>document.getElementById(id);
+const escapeHTML=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function renderDesigns(){
+ backgrounds.forEach((d,i)=>{const opt=document.createElement("option");opt.value=i;opt.textContent=d[0];$("design").appendChild(opt);
+ const tile=document.createElement("div");tile.className="design"+(i===selected?" active":"");tile.style.backgroundImage=d[1];const sp=document.createElement("span");sp.textContent=d[0];tile.appendChild(sp);tile.onclick=()=>selectDesign(i);$("designGrid").appendChild(tile);});
+ $("design").value=selected;
+}
+function selectDesign(i){selected=Number(i);$("design").value=selected;[...$("designGrid").children].forEach((e,j)=>e.classList.toggle("active",j===selected));updateBirthdayPreview();}
+$("design").addEventListener("change",e=>selectDesign(e.target.value));
+function updateBirthdayPreview(){const c=$("color").value;$("preview").style.backgroundImage=backgrounds[selected][1];$("pname").textContent=$("name").value;$("pmessage").textContent=$("message").value;$("pextra").textContent=$("extra").value;["pname","pmessage","pextra"].forEach(id=>$(id).style.color=c);}
+["name","message","extra","color"].forEach(id=>{ $(id).addEventListener("input",updateBirthdayPreview);$(id).addEventListener("change",updateBirthdayPreview);});
+function makeQR(container,url){container.innerHTML="";if(!window.QRCode)throw Error("QR library did not load. Check your internet connection.");new QRCode(container,{text:url,width:220,height:220,correctLevel:QRCode.CorrectLevel.M});}
+async function savePayload(payload,kind,statusEl,qrEl,copyBtn){
+ statusEl.className="small status";statusEl.textContent="Saving your page and creating a compact link…";
+ if(!location.protocol.startsWith("http")||location.hostname==="localhost"){statusEl.textContent="Please publish this site on Netlify first. Then the short-link feature can work.";return "";}
+ try{
+  const response=await fetch("/.netlify/functions/create-link",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({kind,payload})});
+  const result=await response.json();if(!response.ok)throw Error(result.error||"Could not save the page.");
+  const url=new URL(result.url,location.href).href;makeQR(qrEl,url);statusEl.classList.add("success");statusEl.textContent="QR ready! Your full content is saved online behind this short link. Test-scan it before sharing.";copyBtn?.classList.remove("hidden");if(copyBtn)copyBtn.onclick=async()=>{await navigator.clipboard.writeText(url);statusEl.textContent="Link copied: "+url;};return url;
+ }catch(err){statusEl.classList.add("error");statusEl.textContent="Could not create a short link. "+err.message+" Make sure the Netlify Function and storage are configured.";return "";}
+}
+$("birthdayQR").onclick=async()=>{if(!$("name").value.trim()&&!$("message").value.trim()){$("qrStatus").textContent="Please type a name or message first.";return;}
+ lastBirthdayURL=await savePayload({name:$("name").value,message:$("message").value,extra:$("extra").value,color:$("color").value,design:selected},"birthday",$("qrStatus"),$("qr"),$("copyBirthdayLink"));};
+const socialFields=["instagram","facebook","snapchat","xlink","telegram","threads","whatsapp","youtube","linkedin","messenger","email","phone"];
+const socialLabels={instagram:"Instagram",facebook:"Facebook",snapchat:"Snapchat","xlink":"X / Twitter",telegram:"Telegram",threads:"Threads",whatsapp:"WhatsApp",youtube:"YouTube",linkedin:"LinkedIn",messenger:"Messenger",email:"Email",phone:"Phone"};
+function collectSocial(){const links=[];socialFields.forEach(id=>{let v=$(id).value.trim();if(!v)return;if(id==="email")v="mailto:"+v;else if(id==="phone")v="tel:"+v;else if(id==="whatsapp"&&!/^https?:\/\//i.test(v)){let n=v.replace(/[^\d]/g,"");v="https://wa.me/"+n;}else if(!/^(https?:\/\/|mailto:|tel:)/i.test(v))v="https://"+v;links.push({label:socialLabels[id],url:v});});return {title:$("socialTitle").value.trim()||"Connect with me",note:$("socialNote").value.trim(),links};}
+$("previewSocial").onclick=()=>{const d=collectSocial();$("socialPreview").classList.remove("hidden");$("socialPreview").innerHTML="<h3>"+escapeHTML(d.title)+"</h3>"+(d.note?"<p>"+escapeHTML(d.note)+"</p>":"")+(d.links.length?d.links.map(x=>'<p><a style="color:#8af2ff" target="_blank" rel="noopener" href="'+escapeHTML(x.url)+'">'+escapeHTML(x.label)+" ↗</a></p>").join(""):"<p>Add at least one profile link above.</p>");};
+$("socialQR").onclick=async()=>{const d=collectSocial();if(!d.links.length){$("socialStatus").textContent="Add at least one social profile or contact first.";return;}lastSocialURL=await savePayload(d,"social",$("socialStatus"),$("socialQrBox"),null);};
+function updateSitePreview(){const c=$("siteColor").value;const bgs=["radial-gradient(circle at 70% 20%,#f7d4ff 0 2px,transparent 4px),linear-gradient(135deg,#050523,#211454,#080a30)","radial-gradient(circle at 15% 20%,#ff789b 0 8%,transparent 9%),linear-gradient(135deg,#68d7e7,#c5e8ff,#ffcfdd)","radial-gradient(circle at 20% 15%,#d8ad50 0 3px,transparent 5px),linear-gradient(135deg,#050505,#29251c,#050505)","radial-gradient(circle at 15% 20%,#b3ffff 0 8%,transparent 9%),linear-gradient(135deg,#062e50,#167d99,#061a32)","radial-gradient(ellipse at 50% 80%,#ffcf91,transparent 40%),linear-gradient(135deg,#582e76,#ed8b91,#ffd49b)"];$("sitePreview").style.backgroundImage=bgs[Number($("siteBackground").value)||0];$("sitePreviewInner").style.color=c;$("spName").textContent=$("siteName").value||"My Creative Page";$("spTagline").textContent=$("siteTagline").value;$("spHeadline").textContent=$("siteHeadline").value||"Welcome to my website";$("spDescription").textContent=$("siteDescription").value;$("spButton").textContent=$("siteButtonText").value||"Visit link";const u=$("siteButtonURL").value.trim();$("spButton").href=u&&/^https?:\/\//i.test(u)?u:"#";$("spButton").style.display=u?"inline-block":"none";}
+$("previewSite").onclick=updateSitePreview;
+["siteName","siteTagline","siteHeadline","siteDescription","siteButtonText","siteButtonURL","siteColor","siteBackground"].forEach(id=>$(id).addEventListener("input",updateSitePreview));
+$("siteQR").onclick=async()=>{const d={name:$("siteName").value,tagline:$("siteTagline").value,headline:$("siteHeadline").value,description:$("siteDescription").value,buttonText:$("siteButtonText").value,buttonURL:$("siteButtonURL").value,color:$("siteColor").value,background:Number($("siteBackground").value)||0};lastSiteURL=await savePayload(d,"custom",$("siteStatus"),$("siteQrBox"),null);};
+function renderShared(data,kind){
+ document.querySelectorAll("main > section").forEach(s=>s.classList.add("hidden"));
+ const wrap=document.createElement("section");wrap.className="panel";wrap.style.marginTop="40px";
+ const back=document.createElement("p");back.innerHTML='<a href="/" style="color:#8af2ff">← Create another</a>';wrap.appendChild(back);
+ if(kind==="birthday"){
+  wrap.innerHTML+=`<h1>🎂 ${escapeHTML(data.name||"Happy Birthday!")}</h1><div class="preview" style="background-image:${backgrounds[Math.max(0,Math.min(29,Number(data.design)||0))][1]}"><div class="preview-inner" style="color:${/^#[0-9a-f]{6}$/i.test(data.color||"")?data.color:"#ffffff"}"><h2>${escapeHTML(data.name||"")}</h2><p style="white-space:pre-wrap;font-size:20px">${escapeHTML(data.message||"")}</p><p style="white-space:pre-wrap">${escapeHTML(data.extra||"")}</p></div></div>`;
+ }else if(kind==="social"){
+  wrap.innerHTML+=`<h1>🔗 ${escapeHTML(data.title||"Connect with me")}</h1><p>${escapeHTML(data.note||"")}</p>`+(data.links||[]).map(x=>`<p style="text-align:center"><a class="button" style="margin:5px" href="${escapeHTML(x.url)}" target="_blank" rel="noopener">${escapeHTML(x.label)} ↗</a></p>`).join("");
+ }else{
+  const bgs=["radial-gradient(circle at 70% 20%,#f7d4ff 0 2px,transparent 4px),linear-gradient(135deg,#050523,#211454,#080a30)","linear-gradient(135deg,#68d7e7,#c5e8ff,#ffcfdd)","linear-gradient(135deg,#050505,#29251c,#050505)","linear-gradient(135deg,#062e50,#167d99,#061a32)","linear-gradient(135deg,#582e76,#ed8b91,#ffd49b)"];
+  const c=/^#[0-9a-f]{6}$/i.test(data.color||"")?data.color:"#ffffff";
+  wrap.innerHTML+=`<div class="preview" style="background-image:${bgs[Math.max(0,Math.min(4,Number(data.background)||0))]}"><div class="preview-inner" style="color:${c}"><h1>${escapeHTML(data.name||"My Creative Page")}</h1><p>${escapeHTML(data.tagline||"")}</p><h2>${escapeHTML(data.headline||"Welcome")}</h2><p style="white-space:pre-wrap">${escapeHTML(data.description||"")}</p>${data.buttonURL&&/^https?:\/\//i.test(data.buttonURL)?`<a class="button" href="${escapeHTML(data.buttonURL)}" target="_blank" rel="noopener">${escapeHTML(data.buttonText||"Visit link")}</a>`:""}</div></div>`;
+ }
+ document.querySelector("main").prepend(wrap);
+}
+async function loadShared(){const id=new URLSearchParams(location.search).get("p");if(!id)return;try{const r=await fetch("/.netlify/functions/get-link?id="+encodeURIComponent(id));const d=await r.json();if(!r.ok)throw Error(d.error||"Link not found");renderShared(d.payload,d.kind);}catch(e){const el=document.createElement("section");el.className="panel";el.innerHTML="<h2>Sorry, this shared page could not be loaded.</h2><p>"+escapeHTML(e.message)+"</p><a href='/'>Back to studio</a>";document.querySelector("main").prepend(el);}}
+renderDesigns();updateBirthdayPreview();updateSitePreview();loadShared();
+</script>
+</body></html>
